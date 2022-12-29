@@ -46,12 +46,7 @@ func Ec2id(name string) error {
 	}
 
 	if len(result.Reservations) == 0 {
-		fmt.Fprintf(os.Stderr, "error: reservations length=%d\n", len(result.Reservations))
-		return fmt.Errorf("no instance exist")
-	}
-	if len(result.Reservations[0].Instances) == 0 {
-		fmt.Fprintf(os.Stderr, "error: instances length=%d\n", len(result.Reservations[0].Instances))
-		return fmt.Errorf("no instance exist")
+		return nil
 	}
 
 	fmt.Println(*result.Reservations[0].Instances[0].InstanceId)
