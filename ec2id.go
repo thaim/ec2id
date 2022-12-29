@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
+	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
 )
 
 type EC2DescribeInstancesAPI interface {
@@ -24,7 +26,20 @@ func Ec2id(name string) error {
 		return err
 	}
 	client := ec2.NewFromConfig(cfg)
-	result, err := GetInstances(context.TODO(), client, &ec2.DescribeInstancesInput{})
+
+	var params *ec2.DescribeInstancesInput = nil
+	if len(name) != 0 {
+		params = &ec2.DescribeInstancesInput{
+			Filters: []types.Filter {
+				{
+					Name: aws.String("tag:Name"),
+					Values: []string {name},
+				},
+			},
+		}
+	}
+
+	result, err := GetInstances(context.TODO(), client, params)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Got an error retrieving information about your Amazon EC2 instance")
 		return err
