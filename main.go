@@ -8,8 +8,6 @@ import (
 )
 
 var (
-	awsProfile string
-
 	all bool
 	verbose bool
 )
@@ -20,11 +18,6 @@ func main() {
 		Name: "ec2id",
 		Usage: "get instance id",
 		Flags: []cli.Flag {
-			&cli.StringFlag{
-				Name: "aws_profile",
-				EnvVars: []string{"AWS_PROFILE"},
-				Destination: &awsProfile,
-			},
 			// &cli.BoolFlag{
 			// 	Name: "help",
 			// 	Destination: &help,
