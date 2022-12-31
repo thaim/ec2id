@@ -8,26 +8,25 @@ import (
 )
 
 var (
-	all bool
+	all     bool
 	verbose bool
 )
 
-
 func main() {
 	app := &cli.App{
-		Name: "ec2id",
+		Name:  "ec2id",
 		Usage: "get instance id",
-		Flags: []cli.Flag {
+		Flags: []cli.Flag{
 			// &cli.BoolFlag{
 			// 	Name: "help",
 			// 	Destination: &help,
 			// },
 			&cli.BoolFlag{
-				Name: "all",
+				Name:        "all",
 				Destination: &all,
 			},
 			&cli.BoolFlag{
-				Name: "verbose",
+				Name:        "verbose",
 				Destination: &verbose,
 			},
 		},

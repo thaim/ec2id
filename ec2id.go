@@ -30,10 +30,10 @@ func Ec2id(name string) error {
 	var params *ec2.DescribeInstancesInput = nil
 	if len(name) != 0 {
 		params = &ec2.DescribeInstancesInput{
-			Filters: []types.Filter {
+			Filters: []types.Filter{
 				{
-					Name: aws.String("tag:Name"),
-					Values: []string {name},
+					Name:   aws.String("tag:Name"),
+					Values: []string{name},
 				},
 			},
 		}
