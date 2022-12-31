@@ -34,6 +34,7 @@ func main() {
 			name := ctx.Args().Get(0)
 			return Ec2id(name)
 		},
+		HideHelpCommand: true,
 	}
 
 	err := app.Run(os.Args)
