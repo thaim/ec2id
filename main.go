@@ -10,6 +10,7 @@ import (
 var (
 	all     bool
 	verbose bool
+	version = ""
 )
 
 func main() {
