@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"os"
+	"runtime/debug"
 
 	"github.com/urfave/cli/v2"
 )
@@ -36,6 +37,7 @@ func main() {
 			return Ec2id(name)
 		},
 		HideHelpCommand: true,
+		Version: getVersion(),
 	}
 
 	err := app.Run(os.Args)
@@ -45,4 +47,16 @@ func main() {
 	}
 
 	os.Exit(0)
+}
+
+func getVersion() string {
+	if version != "" {
+		return version
+	}
+	i, ok := debug.ReadBuildInfo()
+	if !ok {
+		return "unknown"
+	}
+
+	return i.Main.Version
 }
