@@ -4,7 +4,7 @@ on:
   push:
     # run only against tags
     tags:
-      - '*'
+      - 'v[0-9]+.[0-9]+.[0-9]+'
 
 permissions:
   contents: write
