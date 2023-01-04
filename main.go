@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"runtime/debug"
@@ -34,7 +35,12 @@ func main() {
 		},
 		Action: func(ctx *cli.Context) error {
 			name := ctx.Args().Get(0)
-			return Ec2id(name)
+			client, err := NewAwsClient()
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "initialized failed:%v\n", err)
+				os.Exit(1)
+			}
+			return Ec2id(name, client)
 		},
 		HideHelpCommand: true,
 		Version: getVersion(),

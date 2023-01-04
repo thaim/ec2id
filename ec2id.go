@@ -1,3 +1,4 @@
+//go:generate mockgen -source=$GOFILE -package=$GOPACKAGE -destination=mock_$GOFILE
 package main
 
 import (
@@ -19,14 +20,16 @@ func GetInstances(c context.Context, api EC2DescribeInstancesAPI, input *ec2.Des
 	return api.DescribeInstances(c, input)
 }
 
-func Ec2id(name string) error {
+func NewAwsClient() (EC2DescribeInstancesAPI, error){
 	cfg, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "configuration error")
-		return err
+		return nil, err
 	}
-	client := ec2.NewFromConfig(cfg)
+	return ec2.NewFromConfig(cfg), nil
+}
 
+func Ec2id(name string, client EC2DescribeInstancesAPI) error {
 	var params *ec2.DescribeInstancesInput = nil
 	if len(name) != 0 {
 		params = &ec2.DescribeInstancesInput{
