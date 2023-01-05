@@ -40,7 +40,11 @@ func main() {
 				fmt.Fprintf(os.Stderr, "initialized failed:%v\n", err)
 				os.Exit(1)
 			}
-			return Ec2id(name, client)
+			id, err := Ec2id(name, client)
+			if err == nil {
+				fmt.Println(id)
+			}
+			return err
 		},
 		HideHelpCommand: true,
 		Version: getVersion(),

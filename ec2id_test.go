@@ -42,7 +42,7 @@ func TestEc2id(t *testing.T) {
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
-			err := Ec2id("test", tt.client)
+			id, err := Ec2id("test", tt.client)
 			if tt.wantErr {
 				if (!strings.Contains(err.Error(), tt.expectErr)) {
 					t.Errorf("expect NoSuchKey error, got %T", err)
@@ -51,6 +51,9 @@ func TestEc2id(t *testing.T) {
 			}
 			if err != nil {
 				t.Errorf("expect no error, got error: %v", err)
+			}
+			if expected := ""; id != expected {
+				t.Errorf("expect no output, got id: %s", id)
 			}
 		})
 	}
