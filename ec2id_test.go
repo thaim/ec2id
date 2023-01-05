@@ -21,6 +21,10 @@ func TestEc2id(t *testing.T) {
 					Name: aws.String("tag:Name"),
 					Values: []string{"noexist"},
 				},
+				{
+					Name: aws.String("instance-state-name"),
+					Values: []string{"running"},
+				},
 			},
 		}).
 		Return(&ec2.DescribeInstancesOutput{}, nil).

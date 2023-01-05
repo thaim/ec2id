@@ -36,7 +36,11 @@ func Ec2id(name string, client EC2DescribeInstancesAPI) (string, error) {
 				Name:   aws.String("tag:Name"),
 				Values: []string{name},
 			},
-		}
+			{
+				Name: aws.String("instance-state-name"),
+				Values: []string{"running"},
+			},
+		},
 	}
 
 	result, err := GetInstances(context.TODO(), client, params)
@@ -53,9 +57,6 @@ func Ec2id(name string, client EC2DescribeInstancesAPI) (string, error) {
 	var filteredInstance = result.Reservations[0].Instances[0]
 	for _, v := range result.Reservations {
 		for _, instance := range v.Instances {
-			if string(filteredInstance.State.Name) == "running" && string(instance.State.Name) != "running" {
-				continue
-			}
 			if filteredInstance.LaunchTime.After(*instance.LaunchTime) {
 				continue
 			}
