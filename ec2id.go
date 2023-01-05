@@ -30,14 +30,11 @@ func NewAwsClient() (EC2DescribeInstancesAPI, error){
 }
 
 func Ec2id(name string, client EC2DescribeInstancesAPI) (string, error) {
-	var params *ec2.DescribeInstancesInput = nil
-	if len(name) != 0 {
-		params = &ec2.DescribeInstancesInput{
-			Filters: []types.Filter{
-				{
-					Name:   aws.String("tag:Name"),
-					Values: []string{name},
-				},
+	var params = &ec2.DescribeInstancesInput{
+		Filters: []types.Filter{
+			{
+				Name:   aws.String("tag:Name"),
+				Values: []string{name},
 			},
 		}
 	}
