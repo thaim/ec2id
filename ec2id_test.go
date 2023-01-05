@@ -29,12 +29,14 @@ func TestEc2id(t *testing.T) {
 	cases := []struct {
 		name string
 		client EC2DescribeInstancesAPI
+		expect string
 		wantErr bool
 		expectErr string
 	}{
 		{
-			name: "",
+			name: "return no instance-id",
 			client: mockClient,
+			expect: "",
 			wantErr: false,
 			expectErr: "",
 		},
@@ -52,7 +54,7 @@ func TestEc2id(t *testing.T) {
 			if err != nil {
 				t.Errorf("expect no error, got error: %v", err)
 			}
-			if expected := ""; id != expected {
+			if expected := tt.expect; id != expected {
 				t.Errorf("expect no output, got id: %s", id)
 			}
 		})
