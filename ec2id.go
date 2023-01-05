@@ -54,19 +54,14 @@ func Ec2id(name string, client EC2DescribeInstancesAPI) error {
 
 	// TODO jmespath.Searchで書き換えるとシンプルになる？
 	var filteredInstance = result.Reservations[0].Instances[0]
-	fmt.Fprintf(os.Stderr, "[debug] templ instance: %s\n", *filteredInstance.InstanceId)
 	for _, v := range result.Reservations {
 		for _, instance := range v.Instances {
 			if string(filteredInstance.State.Name) == "running" && string(instance.State.Name) != "running" {
-				fmt.Fprintln(os.Stderr, "[debug] running instance is requred")
 				continue
 			}
 			if filteredInstance.LaunchTime.After(*instance.LaunchTime) {
-				fmt.Fprintln(os.Stderr, "[debugg] newer instance is requred")
 				continue
 			}
-
-			fmt.Fprintf(os.Stderr, "[debug] replace %s with %s\n", *filteredInstance.InstanceId, *instance.InstanceId)
 
 			filteredInstance = instance
 		}
