@@ -4,6 +4,7 @@ import (
 	"context"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/golang/mock/gomock"
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -30,6 +31,49 @@ func TestEc2id(t *testing.T) {
 		Return(&ec2.DescribeInstancesOutput{}, nil).
 		AnyTimes()
 
+	mockClient.EXPECT().
+		DescribeInstances(context.TODO(), &ec2.DescribeInstancesInput{
+			Filters: []types.Filter{
+				{
+					Name: aws.String("tag:Name"),
+					Values: []string{""},
+				},
+				{
+					Name: aws.String("instance-state-name"),
+					Values: []string{"running"},
+				},
+			},
+		}).
+		Return(&ec2.DescribeInstancesOutput{
+			Reservations: []types.Reservation {
+				{
+					Instances: []types.Instance {
+						{
+							InstanceId: aws.String("i-0123456789abcdef0"),
+							LaunchTime: aws.Time(time.Date(2023, 1, 5, 12, 0, 0, 0, time.UTC)),
+						},
+						{
+							InstanceId: aws.String("i-0123456789abcdef1"),
+							LaunchTime: aws.Time(time.Date(2023, 1, 5, 12, 0, 0, 1, time.UTC)),
+						},
+						{
+							InstanceId: aws.String("i-0123456789abcdef2"),
+							LaunchTime: aws.Time(time.Date(2023, 1, 5, 12, 0, 0, 2, time.UTC)),
+						},
+					},
+				},
+				{
+					Instances: []types.Instance {
+						{
+							InstanceId: aws.String("i-00000000000abcdef"),
+							LaunchTime: aws.Time(time.Date(2023, 1, 4, 12, 0, 0, 0, time.UTC)),
+						},
+					},
+				},
+			},
+		}, nil).
+		AnyTimes()
+
 	cases := []struct {
 		name string
 		client EC2DescribeInstancesAPI
@@ -43,6 +87,14 @@ func TestEc2id(t *testing.T) {
 			client: mockClient,
 			instanceName: "noexist",
 			expect: "",
+			wantErr: false,
+			expectErr: "",
+		},
+		{
+			name: "return latest instance-id by no input",
+			client: mockClient,
+			instanceName: "",
+			expect: "i-0123456789abcdef2",
 			wantErr: false,
 			expectErr: "",
 		},
