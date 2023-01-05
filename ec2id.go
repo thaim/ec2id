@@ -29,7 +29,7 @@ func NewAwsClient() (EC2DescribeInstancesAPI, error){
 	return ec2.NewFromConfig(cfg), nil
 }
 
-func Ec2id(name string, client EC2DescribeInstancesAPI) error {
+func Ec2id(name string, client EC2DescribeInstancesAPI) (string, error) {
 	var params *ec2.DescribeInstancesInput = nil
 	if len(name) != 0 {
 		params = &ec2.DescribeInstancesInput{
@@ -45,11 +45,11 @@ func Ec2id(name string, client EC2DescribeInstancesAPI) error {
 	result, err := GetInstances(context.TODO(), client, params)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Got an error retrieving information about your Amazon EC2 instance")
-		return err
+		return "", err
 	}
 
 	if len(result.Reservations) == 0 {
-		return nil
+		return "", nil
 	}
 
 	// TODO jmespath.Searchで書き換えるとシンプルになる？
@@ -67,7 +67,5 @@ func Ec2id(name string, client EC2DescribeInstancesAPI) error {
 		}
 	}
 
-	fmt.Println(*filteredInstance.InstanceId)
-
-	return nil
+	return *filteredInstance.InstanceId, nil
 }
