@@ -19,7 +19,7 @@ func TestEc2id(t *testing.T) {
 			Filters: []types.Filter{
 				{
 					Name: aws.String("tag:Name"),
-					Values: []string{"test"},
+					Values: []string{"noexist"},
 				},
 			},
 		}).
@@ -29,6 +29,7 @@ func TestEc2id(t *testing.T) {
 	cases := []struct {
 		name string
 		client EC2DescribeInstancesAPI
+		instanceName string
 		expect string
 		wantErr bool
 		expectErr string
@@ -36,6 +37,7 @@ func TestEc2id(t *testing.T) {
 		{
 			name: "return no instance-id",
 			client: mockClient,
+			instanceName: "noexist",
 			expect: "",
 			wantErr: false,
 			expectErr: "",
@@ -44,7 +46,7 @@ func TestEc2id(t *testing.T) {
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
-			id, err := Ec2id("test", tt.client)
+			id, err := Ec2id(tt.instanceName, tt.client)
 			if tt.wantErr {
 				if (!strings.Contains(err.Error(), tt.expectErr)) {
 					t.Errorf("expect NoSuchKey error, got %T", err)
