@@ -1,6 +1,7 @@
 # ec2id
 A CLI tool that retrieve the EC2 instance ID of specified instance's Name tag.
 
+
 ## Usage
 Configure your AWS credentials, and then run as follows
 
@@ -17,3 +18,16 @@ $ ec2id sample
 i-0acd9f178c934caea
 ```
 
+## Install
+### Install from binary
+Binaries are available from [Github Releases](https://github.com/thaim/ec2id/releases).
+
+### Install from homebrew
+```
+$ brew install thaim/tap/ec2id
+```
+
+### Install from go install
+```
+$ go install github.com/thaim/ec2id@main
+```
