@@ -18,6 +18,7 @@ $ ec2id sample
 i-0acd9f178c934caea
 ```
 
+
 ## Install
 ### Install from binary
 Binaries are available from [Github Releases](https://github.com/thaim/ec2id/releases).
@@ -31,3 +32,7 @@ $ brew install thaim/tap/ec2id
 ```
 $ go install github.com/thaim/ec2id@main
 ```
+
+
+## LICENSE
+MIT
