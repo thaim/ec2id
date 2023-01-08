@@ -1,2 +1,2 @@
 # ec2id
-get ec2 instance id
+A CLI tool that retrieve the EC2 instance ID of specified instance's Name tag.
