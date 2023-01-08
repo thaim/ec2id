@@ -1,4 +1,6 @@
 # ec2id
+![test](https://github.com/thaim/ec2id/actions/workflows/test.yml/badge.svg)
+
 A CLI tool that retrieve the EC2 instance ID of specified instance's Name tag.
 
 
