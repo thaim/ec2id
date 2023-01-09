@@ -30,20 +30,7 @@ func NewAwsClient() (EC2DescribeInstancesAPI, error){
 }
 
 func Ec2id(name string, client EC2DescribeInstancesAPI) (string, error) {
-	var params = &ec2.DescribeInstancesInput{
-		Filters: []types.Filter{
-			{
-				Name:   aws.String("tag:Name"),
-				Values: []string{name},
-			},
-			{
-				Name: aws.String("instance-state-name"),
-				Values: []string{"running"},
-			},
-		},
-	}
-
-	result, err := GetInstances(context.TODO(), client, params)
+	result, err := GetInstances(context.TODO(), client, buildDescribeInstancesInput(name))
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Got an error retrieving information about your Amazon EC2 instance")
 		return "", err
@@ -66,4 +53,20 @@ func Ec2id(name string, client EC2DescribeInstancesAPI) (string, error) {
 	}
 
 	return *filteredInstance.InstanceId, nil
+}
+
+func buildDescribeInstancesInput(name string) *ec2.DescribeInstancesInput {
+       var params = &ec2.DescribeInstancesInput{
+               Filters: []types.Filter{
+                       {
+                               Name:   aws.String("tag:Name"),
+                               Values: []string{name},
+                       },
+                       {
+                               Name: aws.String("instance-state-name"),
+                               Values: []string{"running"},
+                       },
+               },
+       }
+       return params
 }
