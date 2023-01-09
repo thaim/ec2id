@@ -6,10 +6,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/mock/gomock"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
+	"github.com/golang/mock/gomock"
 )
 
 func TestEc2id(t *testing.T) {
@@ -19,12 +19,12 @@ func TestEc2id(t *testing.T) {
 		DescribeInstances(context.TODO(), &ec2.DescribeInstancesInput{
 			Filters: []types.Filter{
 				{
-					Name: aws.String("tag:Name"),
-					Values: []string{"noexist"},
+					Name:   aws.String("instance-state-name"),
+					Values: []string{"running"},
 				},
 				{
-					Name: aws.String("instance-state-name"),
-					Values: []string{"running"},
+					Name:   aws.String("tag:Name"),
+					Values: []string{"noexist"},
 				},
 			},
 		}).
@@ -35,19 +35,15 @@ func TestEc2id(t *testing.T) {
 		DescribeInstances(context.TODO(), &ec2.DescribeInstancesInput{
 			Filters: []types.Filter{
 				{
-					Name: aws.String("tag:Name"),
-					Values: []string{""},
-				},
-				{
-					Name: aws.String("instance-state-name"),
+					Name:   aws.String("instance-state-name"),
 					Values: []string{"running"},
 				},
 			},
 		}).
 		Return(&ec2.DescribeInstancesOutput{
-			Reservations: []types.Reservation {
+			Reservations: []types.Reservation{
 				{
-					Instances: []types.Instance {
+					Instances: []types.Instance{
 						{
 							InstanceId: aws.String("i-0123456789abcdef0"),
 							LaunchTime: aws.Time(time.Date(2023, 1, 5, 12, 0, 0, 0, time.UTC)),
@@ -63,7 +59,7 @@ func TestEc2id(t *testing.T) {
 					},
 				},
 				{
-					Instances: []types.Instance {
+					Instances: []types.Instance{
 						{
 							InstanceId: aws.String("i-00000000000abcdef"),
 							LaunchTime: aws.Time(time.Date(2023, 1, 4, 12, 0, 0, 0, time.UTC)),
@@ -78,19 +74,19 @@ func TestEc2id(t *testing.T) {
 		DescribeInstances(context.TODO(), &ec2.DescribeInstancesInput{
 			Filters: []types.Filter{
 				{
-					Name: aws.String("tag:Name"),
-					Values: []string{"test"},
+					Name:   aws.String("instance-state-name"),
+					Values: []string{"running"},
 				},
 				{
-					Name: aws.String("instance-state-name"),
-					Values: []string{"running"},
+					Name:   aws.String("tag:Name"),
+					Values: []string{"test"},
 				},
 			},
 		}).
 		Return(&ec2.DescribeInstancesOutput{
-			Reservations: []types.Reservation {
+			Reservations: []types.Reservation{
 				{
-					Instances: []types.Instance {
+					Instances: []types.Instance{
 						{
 							InstanceId: aws.String("i-00000000000abcdef"),
 							LaunchTime: aws.Time(time.Date(2023, 1, 4, 12, 0, 0, 0, time.UTC)),
@@ -102,36 +98,36 @@ func TestEc2id(t *testing.T) {
 		AnyTimes()
 
 	cases := []struct {
-		name string
-		client EC2DescribeInstancesAPI
+		name         string
+		client       EC2DescribeInstancesAPI
 		instanceName string
-		expect string
-		wantErr bool
-		expectErr string
+		expect       string
+		wantErr      bool
+		expectErr    string
 	}{
 		{
-			name: "return no instance-id",
-			client: mockClient,
+			name:         "return no instance-id",
+			client:       mockClient,
 			instanceName: "noexist",
-			expect: "",
-			wantErr: false,
-			expectErr: "",
+			expect:       "",
+			wantErr:      false,
+			expectErr:    "",
 		},
 		{
-			name: "return latest instance-id by no input",
-			client: mockClient,
+			name:         "return latest instance-id by no input",
+			client:       mockClient,
 			instanceName: "",
-			expect: "i-0123456789abcdef2",
-			wantErr: false,
-			expectErr: "",
+			expect:       "i-0123456789abcdef2",
+			wantErr:      false,
+			expectErr:    "",
 		},
 		{
-			name: "return instance-id",
-			client: mockClient,
+			name:         "return instance-id",
+			client:       mockClient,
 			instanceName: "test",
-			expect: "i-00000000000abcdef",
-			wantErr: false,
-			expectErr: "",
+			expect:       "i-00000000000abcdef",
+			wantErr:      false,
+			expectErr:    "",
 		},
 	}
 
@@ -139,7 +135,7 @@ func TestEc2id(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			id, err := Ec2id(tt.instanceName, tt.client)
 			if tt.wantErr {
-				if (!strings.Contains(err.Error(), tt.expectErr)) {
+				if !strings.Contains(err.Error(), tt.expectErr) {
 					t.Errorf("expect NoSuchKey error, got %T", err)
 				}
 				return
