@@ -14,7 +14,7 @@ i-0691a69ff0914bae1
 ```
 
 You can specify the instnace's Name tag
-```
+```bash
 # retrieve the instance id with tag:Name = "sample"
 $ ec2id sample
 i-0acd9f178c934caea
