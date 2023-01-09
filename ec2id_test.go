@@ -19,12 +19,12 @@ func TestEc2id(t *testing.T) {
 		DescribeInstances(context.TODO(), &ec2.DescribeInstancesInput{
 			Filters: []types.Filter{
 				{
-					Name: aws.String("tag:Name"),
-					Values: []string{"noexist"},
-				},
-				{
 					Name: aws.String("instance-state-name"),
 					Values: []string{"running"},
+				},
+				{
+					Name: aws.String("tag:Name"),
+					Values: []string{"noexist"},
 				},
 			},
 		}).
@@ -34,10 +34,6 @@ func TestEc2id(t *testing.T) {
 	mockClient.EXPECT().
 		DescribeInstances(context.TODO(), &ec2.DescribeInstancesInput{
 			Filters: []types.Filter{
-				{
-					Name: aws.String("tag:Name"),
-					Values: []string{""},
-				},
 				{
 					Name: aws.String("instance-state-name"),
 					Values: []string{"running"},
@@ -78,12 +74,12 @@ func TestEc2id(t *testing.T) {
 		DescribeInstances(context.TODO(), &ec2.DescribeInstancesInput{
 			Filters: []types.Filter{
 				{
-					Name: aws.String("tag:Name"),
-					Values: []string{"test"},
-				},
-				{
 					Name: aws.String("instance-state-name"),
 					Values: []string{"running"},
+				},
+				{
+					Name: aws.String("tag:Name"),
+					Values: []string{"test"},
 				},
 			},
 		}).

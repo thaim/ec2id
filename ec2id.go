@@ -56,17 +56,20 @@ func Ec2id(name string, client EC2DescribeInstancesAPI) (string, error) {
 }
 
 func buildDescribeInstancesInput(name string) *ec2.DescribeInstancesInput {
-       var params = &ec2.DescribeInstancesInput{
-               Filters: []types.Filter{
-                       {
-                               Name:   aws.String("tag:Name"),
-                               Values: []string{name},
-                       },
-                       {
-                               Name: aws.String("instance-state-name"),
-                               Values: []string{"running"},
-                       },
-               },
-       }
-       return params
+	var filter = []types.Filter {
+			{
+				Name: aws.String("instance-state-name"),
+				Values: []string{"running"},
+			},
+	}
+	if (len(name) != 0) {
+		filter = append(filter, types.Filter{
+				Name: aws.String("tag:Name"),
+				Values: []string{name},
+		})
+	}
+
+	return &ec2.DescribeInstancesInput{
+		Filters: filter,
+	}
 }
