@@ -47,7 +47,7 @@ func main() {
 			return err
 		},
 		HideHelpCommand: true,
-		Version: getVersion(),
+		Version:         getVersion(),
 	}
 
 	err := app.Run(os.Args)

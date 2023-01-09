@@ -20,7 +20,7 @@ func GetInstances(c context.Context, api EC2DescribeInstancesAPI, input *ec2.Des
 	return api.DescribeInstances(c, input)
 }
 
-func NewAwsClient() (EC2DescribeInstancesAPI, error){
+func NewAwsClient() (EC2DescribeInstancesAPI, error) {
 	cfg, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "configuration error")
@@ -56,16 +56,16 @@ func Ec2id(name string, client EC2DescribeInstancesAPI) (string, error) {
 }
 
 func buildDescribeInstancesInput(name string) *ec2.DescribeInstancesInput {
-	var filter = []types.Filter {
-			{
-				Name: aws.String("instance-state-name"),
-				Values: []string{"running"},
-			},
+	var filter = []types.Filter{
+		{
+			Name:   aws.String("instance-state-name"),
+			Values: []string{"running"},
+		},
 	}
-	if (len(name) != 0) {
+	if len(name) != 0 {
 		filter = append(filter, types.Filter{
-				Name: aws.String("tag:Name"),
-				Values: []string{name},
+			Name:   aws.String("tag:Name"),
+			Values: []string{name},
 		})
 	}
 
