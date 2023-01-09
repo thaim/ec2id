@@ -101,7 +101,7 @@ func TestEc2id(t *testing.T) {
 		name         string
 		client       EC2DescribeInstancesAPI
 		instanceName string
-		expect       string
+		expect       []string
 		wantErr      bool
 		expectErr    string
 	}{
@@ -109,7 +109,7 @@ func TestEc2id(t *testing.T) {
 			name:         "return no instance-id",
 			client:       mockClient,
 			instanceName: "noexist",
-			expect:       "",
+			expect:       []string{},
 			wantErr:      false,
 			expectErr:    "",
 		},
@@ -117,7 +117,7 @@ func TestEc2id(t *testing.T) {
 			name:         "return latest instance-id by no input",
 			client:       mockClient,
 			instanceName: "",
-			expect:       "i-0123456789abcdef2",
+			expect:       []string{"i-0123456789abcdef2"},
 			wantErr:      false,
 			expectErr:    "",
 		},
@@ -125,7 +125,7 @@ func TestEc2id(t *testing.T) {
 			name:         "return instance-id",
 			client:       mockClient,
 			instanceName: "test",
-			expect:       "i-00000000000abcdef",
+			expect:       []string{"i-00000000000abcdef"},
 			wantErr:      false,
 			expectErr:    "",
 		},
@@ -133,7 +133,7 @@ func TestEc2id(t *testing.T) {
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
-			id, err := Ec2id(tt.instanceName, tt.client)
+			ids, err := Ec2id(tt.instanceName, tt.client)
 			if tt.wantErr {
 				if !strings.Contains(err.Error(), tt.expectErr) {
 					t.Errorf("expect NoSuchKey error, got %T", err)
@@ -143,8 +143,13 @@ func TestEc2id(t *testing.T) {
 			if err != nil {
 				t.Errorf("expect no error, got error: %v", err)
 			}
-			if expected := tt.expect; id != expected {
-				t.Errorf("expect no output, got id: %s", id)
+			if len(tt.expect) != len(ids) {
+				t.Errorf("expect %s, got id: %s", tt.expect, ids)
+			}
+			for k, v := range ids {
+				if v != tt.expect[k] {
+					t.Errorf("expect %s, got id: %s", tt.expect, ids)
+				}
 			}
 		})
 	}
