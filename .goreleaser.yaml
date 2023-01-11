@@ -42,3 +42,5 @@ brews:
       owner: thaim
       name: homebrew-tap
       token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    homepage: "https://github.com/thaim/ec2id"
+    description: "A CLI tool that retrieve the EC2 instance ID of specified instance's Name tag"
