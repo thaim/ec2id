@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"runtime/debug"
@@ -42,9 +43,7 @@ func main() {
 			}
 			ids, err := Ec2id(name, client)
 			if err == nil && ids != nil {
-				for id := range ids {
-					fmt.Println(id)
-				}
+				printIds(os.Stdout, ids, all)
 			}
 			return err
 		},
@@ -71,4 +70,14 @@ func getVersion() string {
 	}
 
 	return i.Main.Version
+}
+
+func printIds(out io.Writer, ids []string, all bool) {
+	for _, id := range ids {
+		fmt.Fprintln(out, id)
+
+		if !all {
+			break
+		}
+	}
 }
