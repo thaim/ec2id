@@ -14,6 +14,7 @@ var (
 	all     bool
 	verbose bool
 	version = ""
+	revision = ""
 )
 
 func main() {
@@ -48,7 +49,7 @@ func main() {
 			return err
 		},
 		HideHelpCommand: true,
-		Version:         getVersion(),
+		Version:         fmt.Sprintf("%s (rev:%s)", getVersion(), getRevision()),
 	}
 
 	err := app.Run(os.Args)
@@ -70,6 +71,24 @@ func getVersion() string {
 	}
 
 	return i.Main.Version
+}
+
+func getRevision() string {
+	if revision != "" {
+		return revision
+	}
+	i, ok := debug.ReadBuildInfo()
+	if !ok {
+		return "unkown"
+	}
+
+	for _, s := range i.Settings {
+		if s.Key == "vcs.revision" {
+			return s.Value
+		}
+	}
+
+	return "unknown"
 }
 
 func printIds(out io.Writer, ids []string, all bool) {
