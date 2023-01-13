@@ -49,7 +49,7 @@ func main() {
 			return err
 		},
 		HideHelpCommand: true,
-		Version:         fmt.Sprintf("%s (rev:%s)", getVersion(), getRevision()),
+		Version:         versionFormatter(getVersion(), getRevision()),
 	}
 
 	err := app.Run(os.Args)
@@ -61,13 +61,24 @@ func main() {
 	os.Exit(0)
 }
 
+func versionFormatter(version string, revision string) string {
+	if version == "" {
+		version = "devel"
+	}
+
+	if revision == "" {
+		return version
+	}
+	return fmt.Sprintf("%s (rev: %s)", version, revision)
+}
+
 func getVersion() string {
 	if version != "" {
 		return version
 	}
 	i, ok := debug.ReadBuildInfo()
 	if !ok {
-		return "unknown"
+		return ""
 	}
 
 	return i.Main.Version
@@ -79,7 +90,7 @@ func getRevision() string {
 	}
 	i, ok := debug.ReadBuildInfo()
 	if !ok {
-		return "unkown"
+		return ""
 	}
 
 	for _, s := range i.Settings {
@@ -88,7 +99,7 @@ func getRevision() string {
 		}
 	}
 
-	return "unknown"
+	return ""
 }
 
 func printIds(out io.Writer, ids []string, all bool) {
