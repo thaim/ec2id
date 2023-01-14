@@ -1,5 +1,6 @@
 # ec2id
 ![test](https://github.com/thaim/ec2id/actions/workflows/test.yml/badge.svg)
+[![codecov](https://codecov.io/gh/thaim/ec2id/branch/main/graph/badge.svg?token=JFHU6CS8WF)](https://codecov.io/gh/thaim/ec2id)
 
 A CLI tool that retrieve the EC2 instance ID of specified instance's Name tag.
 
