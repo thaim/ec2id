@@ -8,7 +8,7 @@ build: *.go test ## Build binary
 	go build -ldflags "-s -w -X main.version=${GIT_VERSION} -X main.buildDate=${DATE}" -trimpath -o bin/ec2id
 
 test: ## Run test
-	go test ./...
+	go test -race -coverprofile=coverage.out -covermode=atomic ./...
 
 clean: ## Remove binary
 	rm -f bin/ec2id
