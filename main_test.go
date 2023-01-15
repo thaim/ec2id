@@ -5,6 +5,48 @@ import (
 	"testing"
 )
 
+func TestMainVersionFormatter(t * testing.T) {
+	cases := []struct {
+		name     string
+		version  string
+		revision string
+		expect   string
+	}{
+		{
+			name:     "specified version and revision",
+			version:  "v1.0.0",
+			revision: "0123456789abcdef",
+			expect:   "v1.0.0 (rev: 0123456789abcdef)",
+		},
+		{
+			name:     "specified version only",
+			version:  "v1.0.0",
+			revision: "",
+			expect:   "v1.0.0",
+		},
+		{
+			name:     "specified revision only",
+			version:  "",
+			revision: "0123456789abcdef",
+			expect:   "devel (rev: 0123456789abcdef)",
+		},
+		{
+			name:     "no version and revision specified",
+			version:  "",
+			revision: "",
+			expect:   "devel",
+		},
+	}
+
+	for _, tt := range cases {
+		t.Run(tt.name, func(t *testing.T) {
+			if actual := versionFormatter(tt.version, tt.revision); actual != tt.expect {
+				t.Errorf("expect %s, got id: %s", tt.expect, actual)
+			}
+		})
+	}
+}
+
 func TestMainPrintIds(t *testing.T) {
 	cases := []struct {
 		name    string
