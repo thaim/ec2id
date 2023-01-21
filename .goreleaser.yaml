@@ -44,3 +44,9 @@ brews:
       token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
     homepage: "https://github.com/thaim/ec2id"
     description: "A CLI tool that retrieve the EC2 instance ID of specified instance's Name tag"
+
+dockers:
+  - image_templates:
+      - "ghcr.io/thaim/ec2id:{{ .Tag }}"
+      - "ghcr.io/thaim/ec2id:{{ .FullCommit }}"
+      - "ghcr.io/thaim/ec2id:latest"
