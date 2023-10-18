@@ -38,7 +38,7 @@ changelog:
 
 brews:
   -
-    tap:
+    repository:
       owner: thaim
       name: homebrew-tap
       token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
