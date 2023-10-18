@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"sort"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -40,19 +41,21 @@ func Ec2id(name string, client EC2DescribeInstancesAPI) ([]string, error) {
 		return nil, nil
 	}
 
-	// TODO jmespath.Searchで書き換えるとシンプルになる？
-	var filteredInstance = result.Reservations[0].Instances[0]
+	var filteredInstance = []types.Instance{}
 	for _, v := range result.Reservations {
-		for _, instance := range v.Instances {
-			if filteredInstance.LaunchTime.After(*instance.LaunchTime) {
-				continue
-			}
-
-			filteredInstance = instance
-		}
+		filteredInstance = append(filteredInstance, v.Instances...)
 	}
 
-	return []string{*filteredInstance.InstanceId}, nil
+	sort.Slice(filteredInstance, func(i, j int) bool {
+		return filteredInstance[i].LaunchTime.After(*filteredInstance[j].LaunchTime)
+	})
+
+	var instanceIds = []string{}
+	for _, v := range filteredInstance {
+		instanceIds = append(instanceIds, *v.InstanceId)
+	}
+
+	return instanceIds, nil
 }
 
 func buildDescribeInstancesInput(name string) *ec2.DescribeInstancesInput {
