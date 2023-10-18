@@ -15,6 +15,11 @@ import (
 func TestEc2id(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	mockClient := NewMockEC2DescribeInstancesAPI(ctrl)
+	// reservation-id, instance-id, launch-time, tag:Name
+	// r-03803cf1200d61cf7,i-0123456789abcdef0, 2023-01-05-12:00:00.00, sample
+	// r-03803cf1200d61cf7,i-0123456789abcdef1, 2023-01-05-12:00:00.01, sample
+	// r-03803cf1200d61cf7,i-0123456789abcdef2, 2023-01-05-12:00:00.02, sample2
+	// r-03803cf1200d61cf7,i-00000000000abcdef, 2023-01-04-12:00:00.00, test
 	mockClient.EXPECT().
 		DescribeInstances(context.TODO(), &ec2.DescribeInstancesInput{
 			Filters: []types.Filter{
@@ -114,10 +119,10 @@ func TestEc2id(t *testing.T) {
 			expectErr:    "",
 		},
 		{
-			name:         "return latest instance-id by no input",
+			name:         "return instance-ids sorted by LaunchTime descending with no input",
 			client:       mockClient,
 			instanceName: "",
-			expect:       []string{"i-0123456789abcdef2"},
+			expect:       []string{"i-0123456789abcdef2", "i-0123456789abcdef1", "i-0123456789abcdef0", "i-00000000000abcdef"},
 			wantErr:      false,
 			expectErr:    "",
 		},
@@ -148,7 +153,7 @@ func TestEc2id(t *testing.T) {
 			}
 			for k, v := range ids {
 				if v != tt.expect[k] {
-					t.Errorf("expect %s, got id: %s", tt.expect, ids)
+					t.Errorf("expect %s, got id: %s at index %d", tt.expect, ids, k)
 				}
 			}
 		})
